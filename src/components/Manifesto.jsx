@@ -39,22 +39,22 @@ export default function Manifesto() {
       <div className="absolute inset-0 pointer-events-none z-[1]">
         {/* Perimeter Vignette */}
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(3,8,16,0.2) 70%, rgba(3,8,16,0.6) 100%)'
+          background: 'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(0,0,15,0.2) 70%, rgba(0,0,15,0.6) 100%)'
         }} />
         
         {/* Center Glow */}
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(circle at 70% 50%, rgba(60,130,246,0.08) 0%, transparent 60%)'
+          background: 'radial-gradient(circle at 70% 50%, rgba(201,130,20,0.08) 0%, transparent 60%)'
         }} />
 
         {/* Bottom Fade */}
         <div className="absolute bottom-0 left-0 right-0 h-[25vh]" style={{
-          background: 'linear-gradient(to top, rgba(3,8,16,0.7) 0%, transparent 100%)'
+          background: 'linear-gradient(to top, rgba(0,0,15,0.7) 0%, transparent 100%)'
         }} />
         
         {/* Top Fade */}
         <div className="absolute top-0 left-0 right-0 h-[20vh]" style={{
-          background: 'linear-gradient(to bottom, rgba(3,8,16,0.5) 0%, transparent 100%)'
+          background: 'linear-gradient(to bottom, rgba(0,0,15,0.5) 0%, transparent 100%)'
         }} />
       </div>
       {/* Section Counter */}
