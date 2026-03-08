@@ -1,1 +1,36 @@
+# Dependencies
 node_modules
+.pnp
+.pnp.js
+
+# Testing
+coverage
+
+# Production
+dist
+
+# Misc
+.DS_Store
+*.pem
+
+# Local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vite
+.vite
+manifest.json
+
+# IDEs
+.vscode/*
+!.vscode/extensions.json
+.idea
+.shproj
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

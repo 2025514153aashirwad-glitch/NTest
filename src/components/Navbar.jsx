@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth, SignInButton, UserButton } from "@clerk/react";
 
 const NAV_LINKS = [
   { name: 'Scholar', href: '/scholar' },
@@ -12,7 +11,6 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
-  const { isSignedIn } = useAuth();
   const [scrolled, setScrolled] = React.useState(false);
   const location = useLocation();
 
@@ -73,27 +71,11 @@ export default function Navbar() {
         >
           Join →
         </Link>
-        {!isSignedIn && (
-          <motion.div whileHover={{ scale: 1.02, y: -1 }} whileTap={{ scale: 0.97, y: 0 }}>
-            <SignInButton mode="modal">
-              <button className="h-[34px] px-5 rounded-pill bg-gold font-sans text-[0.65rem] font-medium text-void tracking-[0.1em] uppercase shadow-[0_2px_18px_rgba(201,169,110,0.4)] transition-all duration-300">
-                Portal →
-              </button>
-            </SignInButton>
-          </motion.div>
-        )}
-        {isSignedIn && (
-          <div className="flex items-center gap-4 px-2 py-1 rounded-pill bg-white/5 border border-white/10">
-            <UserButton
-              appearance={{
-                elements: {
-                  userButtonAvatarBox: "w-7 h-7",
-                  userButtonTrigger: "focus:shadow-none focus:ring-0"
-                }
-              }}
-            />
-          </div>
-        )}
+        <motion.div whileHover={{ scale: 1.02, y: -1 }} whileTap={{ scale: 0.97, y: 0 }}>
+          <button className="h-[34px] px-5 rounded-pill bg-gold font-sans text-[0.65rem] font-medium text-void tracking-[0.1em] uppercase shadow-[0_2px_18px_rgba(201,169,110,0.4)] transition-all duration-300">
+            Portal →
+          </button>
+        </motion.div>
       </div>
     </nav>
   );
