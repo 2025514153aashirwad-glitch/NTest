@@ -1,0 +1,490 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Spatial */
+  --void:         #00000f;
+  --deep:         #00000f;
+  --surface:      rgba(7,16,45,0.52);
+  --surface-hi:   rgba(10,22,62,0.68);
+  --glass:        rgba(8,18,52,0.42);
+
+  /* Gold system */
+  --gold:         #c9a84c;
+  --gold-hi:      #d4b060;
+  --gold-lo:      #a07840;
+  --gold-glow:    rgba(201,168,76,0.15);
+  --gold-border:  rgba(201,168,76,0.25);
+
+  /* Text */
+  --text-light:   #f0ece4;
+
+  /* Radii */
+  --r-pill: 100px;
+  --r-2xl:  32px;
+  --r-xl:   24px;
+  --r-lg:   18px;
+  --r-md:   12px;
+  --r-sm:   8px;
+
+  /* Motion */
+  --ease:      cubic-bezier(0.22, 1, 0.36, 1);
+  --spring:    cubic-bezier(0.34, 1.56, 0.64, 1);
+  --cinematic: cubic-bezier(0.76, 0, 0.24, 1);
+  --snap:      cubic-bezier(0.87, 0, 0.13, 1);
+
+  /* Typography Scales (Fluid via clamp) */
+  --t-hero:    clamp(5.5rem, 10.5vw, 12rem);
+  --t-section: clamp(4rem,   7.5vw,  9rem);
+  --t-card:    clamp(1.8rem, 2.5vw,  2.8rem);
+  --t-sub:     clamp(1rem,   1.4vw,  1.2rem);
+  --t-body:    clamp(0.85rem,1.1vw,  0.95rem);
+  --t-label:   0.6rem;
+  --t-micro:   0.52rem;
+
+  /* Parchment Theme — ONLY used when explicitly applied via .parchment-section */
+  --parchment:      #f2ede6;
+  --paper:          #e8e2d9;
+  --ink:            #1a1612;
+  --parchment-glow: rgba(201,168,76,0.05);
+}
+
+@layer base {
+  body {
+    @apply bg-void text-w90 font-sans selection:bg-gold selection:text-void antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: "Cormorant Garamond", serif;
+    @apply font-light leading-[0.9] tracking-[-0.03em];
+  }
+}
+
+@layer components {
+  /* Atmospheric Overlays */
+  .noise-overlay {
+    @apply fixed inset-0 pointer-events-none z-[999];
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    mix-blend-mode: overlay;
+  }
+
+  .scanlines {
+    @apply fixed inset-0 pointer-events-none z-[998];
+    background: linear-gradient(
+      to bottom,
+      transparent 50%,
+      rgba(0, 0, 0, 0.2) 50%
+    );
+    background-size: 100% 4px;
+    opacity: 0.1;
+  }
+
+  .vignette {
+    @apply fixed inset-0 pointer-events-none z-[1];
+    background: radial-gradient(
+      ellipse at center,
+      transparent 40%,
+      rgba(3, 8, 16, 0.45) 100%
+    );
+  }
+
+  /* Reveal Foundations */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+    will-change: opacity, transform;
+  }
+
+  [data-reveal].revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .line-mask {
+    overflow: hidden;
+    display: block;
+  }
+
+  [data-line] {
+    display: block;
+    transform: translateY(105%);
+    transition: transform 1.1s var(--cinematic);
+    will-change: transform;
+  }
+
+  [data-line].revealed {
+    transform: translateY(0);
+  }
+
+  /* Reveal Delays */
+  [data-reveal-delay="100"].revealed { transition-delay: 100ms; }
+  [data-reveal-delay="200"].revealed { transition-delay: 200ms; }
+  [data-reveal-delay="300"].revealed { transition-delay: 300ms; }
+  [data-reveal-delay="400"].revealed { transition-delay: 400ms; }
+
+  /* Universe Carousel Section Containment */
+  .universes-section {
+    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 0;
+    padding-bottom: 0;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* ════════════════════════════════════════════
+     WORLDS SECTION — Dark cosmic environment
+     Full override of any parchment leakage.
+     Applies to ALL child elements explicitly.
+  ════════════════════════════════════════════ */
+  .worlds-section {
+    background: #00000f !important;
+    color: #f0ece4 !important;
+    position: relative;
+  }
+
+  /* Atmospheric warm glow overlay */
+  .worlds-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 40%,
+        rgba(201, 140, 30, 0.04) 0%, transparent 60%),
+      linear-gradient(to bottom, #00000f 0%, transparent 12%),
+      linear-gradient(to top,    #00000f 0%, transparent 12%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Transparent passthrough for all direct children */
+  .worlds-section > * {
+    background-color: transparent !important;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Force header elements to dark text */
+  .worlds-section .section-title,
+  .worlds-section h1,
+  .worlds-section h2 {
+    color: #f0ece4 !important;
+  }
+
+  .worlds-section .section-title em,
+  .worlds-section h2 em {
+    color: #c9a84c !important;
+  }
+
+  .worlds-section .section-badge,
+  .worlds-section .worlds-badge {
+    border-color: rgba(201, 168, 76, 0.3) !important;
+    color: rgba(240, 236, 228, 0.6) !important;
+    background: transparent !important;
+  }
+
+  /* Card visual zone — ensure gradient renders on dark */
+  .worlds-section .card-visual {
+    background: transparent;
+  }
+
+  /* Card info panel — solid dark, no light bleed */
+  .worlds-section .card-info,
+  .worlds-section [class*="card-info"] {
+    background: #0a0906 !important;
+    border-top: 1px solid rgba(201, 168, 76, 0.12) !important;
+  }
+
+  /* Navigation arrows */
+  .worlds-section .carousel-arrow {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(201, 168, 76, 0.3);
+    color: rgba(201, 168, 76, 0.7);
+  }
+
+  .worlds-section .carousel-arrow:hover {
+    border-color: rgba(201, 168, 76, 0.7);
+    color: #c9a84c;
+    background: rgba(201, 168, 76, 0.08);
+  }
+
+  .universes-section + .phases-section {
+    margin-top: 0;
+    position: relative;
+    z-index: 20;
+    background: var(--void);
+  }
+
+  /* Parchment Theme Protocol */
+  .parchment-section {
+    @apply relative overflow-hidden bg-[var(--parchment)] text-[var(--ink)];
+  }
+
+  .parchment-texture {
+    @apply absolute inset-0 pointer-events-none z-[1];
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.035;
+    mix-blend-mode: multiply;
+  }
+
+  .parchment-glow {
+    @apply absolute top-0 left-1/2 -translate-x-1/2 w-[60vw] h-[40vh] pointer-events-none z-[2];
+    background: radial-gradient(circle at 50% 0%, var(--parchment-glow) 0%, transparent 70%);
+  }
+
+  /* Ticker Protocol */
+  .ticker-wrapper {
+    background: transparent;
+    position: relative;
+    z-index: 10;
+    padding: 16px 0;
+  }
+
+  .ticker-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 8, 0.85);
+    backdrop-filter: blur(2px);
+    z-index: -1;
+  }
+
+  .ticker-pill {
+    background: transparent;
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    color: rgba(240, 236, 228, 0.45);
+    border-radius: 100px;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    padding: 7px 16px;
+    white-space: nowrap;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .ticker-pill:hover {
+    border-color: rgba(201, 168, 76, 0.6);
+    color: rgba(240, 236, 228, 0.85);
+  }
+
+  /* ════════════════════════════════════════════
+     CINEMATIC TRANSITION SYSTEM — Rule 7
+     Global section margin reset
+  ════════════════════════════════════════════ */
+  section, footer, .section, [class*="-section"] {
+    margin-top: 0;
+    margin-bottom: 0;
+    position: relative;
+  }
+
+  /* ════════════════════════════════════════════
+     LIGHT SECTION DISSOLVES — Rules 1, 3, 4
+     .light-dissolve-top    = dark→light top edge
+     .light-dissolve-bottom = light→dark bottom edge
+  ════════════════════════════════════════════ */
+
+  /* Applied to light sections that follow a dark section */
+  .light-top-dissolve::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 160px;
+    background: linear-gradient(to bottom, #00000f 0%, rgba(0, 0, 10, 0.5) 50%, transparent 100%);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* Applied to light sections that are followed by a dark section */
+  .light-bottom-dissolve::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 180px;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 10, 0.6) 60%, #00000f 100%);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* Combinable: surround a light section with both dissolves */
+  .light-both-dissolve::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 160px;
+    background: linear-gradient(to bottom, #00000f 0%, rgba(0, 0, 10, 0.5) 50%, transparent 100%);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .light-both-dissolve::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 180px;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 10, 0.6) 60%, #00000f 100%);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* Dark section top — dissolves FROM above dark when light is above */
+  .dark-top-dissolve::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 140px;
+    background: linear-gradient(to bottom, #00000f, transparent);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* Parchment section override for overflow — Rules 1, 4 */
+  .parchment-section {
+    overflow: visible;
+  }
+
+  /* Canvas-based sections keep overflow:hidden — Rule 4 */
+  .overflow-guard {
+    overflow: hidden !important;
+  }
+}
+
+
+@layer utilities {
+  .text-hero { font-size: var(--t-hero); }
+  .text-section { font-size: var(--t-section); }
+  .text-card { font-size: var(--t-card); }
+  .text-sub { font-size: var(--t-sub); }
+  .text-body { font-size: var(--t-body); }
+  .text-label { font-size: var(--t-label); }
+  .text-micro { font-size: var(--t-micro); }
+
+  .italic-gold {
+    @apply italic text-gold-hi font-light;
+  }
+
+  .glass-frosted {
+    @apply bg-glass backdrop-blur-[32px] border border-w08;
+  }
+
+  /* Parchment Specific Utilities */
+  .text-ink { color: var(--ink); }
+  .bg-parchment { background-color: var(--parchment); }
+  .bg-paper { background-color: var(--paper); }
+  
+  .parchment-card {
+    background-color: var(--paper);
+    border: 1px solid rgba(201, 168, 76, 0.15);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+  }
+}
+
+/* ════════════════════════════════════════════
+   INNER PAGE GLOBAL RULES
+   Ensures warm void tone everywhere
+════════════════════════════════════════════ */
+
+/* Scholar-breathe — slow ambient glow pulse on hero bg */
+@keyframes scholar-breathe {
+  from { opacity: 0.55; transform: scale(1.0); }
+  to   { opacity: 1.0;  transform: scale(1.06); }
+}
+.scholar-breathe {
+  animation: scholar-breathe 8s ease-in-out infinite alternate;
+}
+
+/* fadeUp — used for staggered text reveals */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Pulse dot for badges */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.75); }
+}
+
+/* animate-spin-slow for Navbar logo ring */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+/* ════════════════════════════════════════════
+   VIDEO BACKGROUND LAYER
+   Drop a <video> inside and it auto-styles.
+   When empty, shows a warm gradient fill.
+════════════════════════════════════════════ */
+.video-bg-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.video-bg-layer video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.32;
+}
+/* Warm gradient placeholder when no video present */
+.video-bg-layer:empty {
+  background:
+    radial-gradient(ellipse 100% 70% at 50% 100%, rgba(170,90,15,0.055) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 20% 30%,  rgba(200,130,20,0.03)  0%, transparent 50%),
+    #00000f;
+}
+
+/* ════════════════════════════════════════════
+   SCHOLAR SECTION BASE
+   All inner page sections enforce warm void
+════════════════════════════════════════════ */
+.scholar-section {
+  background: #00000f;
+}
+
+/* Global inner-page warm background guarantee */
+.scholar-hero {
+  background: #00000f;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ════════════════════════════════════════════
+   GLOBAL DARK LOCK — Final Guard
+   Dark is the default. Parchment is the exception.
+   Only .parchment-section / .section-light / [data-theme="light"]
+   should ever render a light background.
+════════════════════════════════════════════ */
+
+/* Body is always dark */
+body {
+  background: #00000f !important;
+  color: #f0ece4;
+}
+
+/* Any section NOT explicitly marked as light stays dark */
+section:not(.parchment-section):not(.section-light):not([data-theme="light"]),
+footer:not(.parchment-section):not(.section-light) {
+  background-color: #00000f;
+}
+
+/* Worlds/universes section — ultra-high specificity dark lock */
+section.worlds-section,
+section.universes-section,
+.worlds-section,
+.universes-section {
+  background: #00000f !important;
+  color: #f0ece4 !important;
+}

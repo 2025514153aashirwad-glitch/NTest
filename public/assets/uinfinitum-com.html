@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U∞ — Industrial Simulation Infrastructure</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #04040f;
+    --navy: #070714;
+    --surface: #0c0c1e;
+    --panel: #10102a;
+    --border: #1a1a3a;
+    --border-bright: #252550;
+    --text: #e4e4f0;
+    --text-mid: #6868a0;
+    --text-dim: #303060;
+    --forge: #ff6b2b;
+    --scholar: #00c8f0;
+    --syndicate: #9b59f7;
+    --nexus: #1ad67a;
+    --white: #f0f0f8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--void);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* STARS */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .star {
+    position: absolute;
+    width: 1px; height: 1px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle var(--d, 3s) infinite;
+    opacity: var(--o, 0.3);
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: var(--o, 0.3); }
+    50% { opacity: 0.05; }
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    padding: 24px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(4,4,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--white);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-logo-dot {
+    width: 6px; height: 6px;
+    background: var(--forge);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--forge);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .nav-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--text-mid);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-link:hover { color: var(--text); }
+
+  .nav-cta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--void);
+    background: var(--white);
+    padding: 10px 20px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background 0.2s;
+  }
+
+  .nav-cta:hover { background: var(--scholar); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 60px 80px;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,200,240,0.06) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    padding: 8px 20px;
+    margin-bottom: 40px;
+    background: var(--surface);
+    opacity: 0;
+    animation: fadeIn 0.8s ease 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(56px, 8vw, 108px);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    color: var(--white);
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeIn 0.8s ease 0.5s forwards;
+  }
+
+  .hero-title-small {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: clamp(20px, 3vw, 36px);
+    color: var(--text-mid);
+    font-weight: 400;
+    margin-bottom: 40px;
+    letter-spacing: -0.01em;
+    opacity: 0;
+    animation: fadeIn 0.8s ease 0.7s forwards;
+  }
+
+  .hero-declaration {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--text-mid);
+    letter-spacing: 0.05em;
+    max-width: 600px;
+    line-height: 1.8;
+    margin-bottom: 60px;
+    opacity: 0;
+    animation: fadeIn 0.8s ease 0.9s forwards;
+  }
+
+  /* THREE PATH SELECTOR */
+  .path-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    max-width: 900px;
+    width: 100%;
+    opacity: 0;
+    animation: fadeIn 0.8s ease 1.1s forwards;
+  }
+
+  .path-btn {
+    padding: 28px 24px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+    display: block;
+  }
+
+  .path-btn:hover { background: var(--surface); border-color: var(--border-bright); transform: translateY(-2px); }
+
+  .path-btn.student:hover { border-color: var(--scholar); box-shadow: 0 0 30px rgba(0,200,240,0.1); }
+  .path-btn.educator:hover { border-color: var(--syndicate); box-shadow: 0 0 30px rgba(155,89,247,0.1); }
+  .path-btn.institution:hover { border-color: var(--forge); box-shadow: 0 0 30px rgba(255,107,43,0.1); }
+
+  .path-icon {
+    font-size: 24px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .path-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .path-btn.student .path-role { color: var(--scholar); }
+  .path-btn.educator .path-role { color: var(--syndicate); }
+  .path-btn.institution .path-role { color: var(--forge); }
+
+  .path-label {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .path-desc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-mid);
+    line-height: 1.5;
+  }
+
+  /* SCROLL INDICATOR */
+  .scroll-ind {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: bounce 2s infinite;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--text-dim), transparent);
+  }
+
+  @keyframes bounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* CONTENT SECTIONS */
+  .content-section {
+    position: relative;
+    z-index: 1;
+    padding: 120px 60px;
+    border-top: 1px solid var(--border);
+    scroll-margin-top: 80px;
+  }
+
+  .section-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .section-title-large {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 24px;
+  }
+
+  .section-desc {
+    font-size: 16px;
+    color: var(--text-mid);
+    line-height: 1.8;
+    max-width: 540px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 300;
+  }
+
+  /* STUDENT SECTION */
+  .student-section { background: linear-gradient(to bottom, var(--void), rgba(0,200,240,0.02), var(--void)); }
+
+  .sprint-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 60px;
+  }
+
+  .sprint-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 40px;
+    transition: border-color 0.3s;
+  }
+
+  .sprint-card:hover { border-color: var(--scholar); }
+
+  .sprint-week {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--scholar);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .sprint-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+
+  .sprint-desc {
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.7;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 300;
+  }
+
+  .price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 60px;
+    padding: 32px 40px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+  }
+
+  .price-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-mid);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .price-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    color: var(--scholar);
+  }
+
+  .price-cta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    background: var(--scholar);
+    color: var(--void);
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s;
+  }
+
+  .price-cta:hover { opacity: 0.85; }
+
+  /* EDUCATOR SECTION */
+  .educator-section { background: linear-gradient(to bottom, var(--void), rgba(155,89,247,0.02), var(--void)); }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 60px;
+  }
+
+  .feature-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 32px;
+    transition: border-color 0.3s, background 0.3s;
+  }
+
+  .feature-card:hover {
+    border-color: var(--syndicate);
+    background: var(--surface);
+  }
+
+  .feature-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .feature-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .feature-desc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-mid);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .educator-price-block {
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+
+  .edu-price-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 40px;
+  }
+
+  .edu-price-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 48px;
+    color: var(--syndicate);
+    margin-bottom: 4px;
+    letter-spacing: -0.03em;
+  }
+
+  .edu-price-period {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-mid);
+    letter-spacing: 0.2em;
+    margin-bottom: 24px;
+  }
+
+  .edu-includes {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .edu-includes li {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-mid);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .edu-includes li::before {
+    content: '→';
+    color: var(--syndicate);
+    flex-shrink: 0;
+  }
+
+  .apply-block {
+    background: rgba(155,89,247,0.06);
+    border: 1px solid rgba(155,89,247,0.2);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .apply-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.8;
+    margin-bottom: 32px;
+    font-weight: 300;
+  }
+
+  .apply-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 16px 32px;
+    background: var(--syndicate);
+    color: var(--void);
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 500;
+    transition: opacity 0.2s;
+    align-self: flex-start;
+  }
+
+  .apply-btn:hover { opacity: 0.85; }
+
+  /* INSTITUTION SECTION */
+  .institution-section { background: linear-gradient(to bottom, var(--void), rgba(255,107,43,0.02), var(--void)); }
+
+  .inst-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    margin-top: 60px;
+    align-items: start;
+  }
+
+  .inst-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-bottom: 40px;
+  }
+
+  .stat-block {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 28px;
+  }
+
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 40px;
+    color: var(--forge);
+    letter-spacing: -0.03em;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-mid);
+    letter-spacing: 0.15em;
+  }
+
+  .mou-form {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 40px;
+  }
+
+  .mou-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+
+  .mou-desc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-mid);
+    margin-bottom: 32px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .form-field {
+    margin-bottom: 16px;
+  }
+
+  .form-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--text-mid);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-input:focus { border-color: var(--forge); }
+
+  .form-input::placeholder { color: var(--text-dim); }
+
+  .form-submit {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 16px 32px;
+    background: var(--forge);
+    color: var(--void);
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    width: 100%;
+    margin-top: 8px;
+    transition: opacity 0.2s;
+  }
+
+  .form-submit:hover { opacity: 0.85; }
+
+  /* ECOSYSTEM MAP */
+  .ecosystem-map {
+    position: relative;
+    z-index: 1;
+    padding: 120px 60px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .eco-nodes {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 60px;
+  }
+
+  .eco-node {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 32px 24px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.3s;
+    display: block;
+  }
+
+  .eco-node:hover { background: var(--surface); transform: translateY(-3px); }
+
+  .eco-node-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin: 0 auto 16px;
+  }
+
+  .eco-node-name {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .eco-node-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-mid);
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+
+  .eco-node-desc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-mid);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 60px;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 60px;
+  }
+
+  .footer-brand {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 16px;
+  }
+
+  .footer-tagline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-mid);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .footer-col-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+
+  .footer-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-mid);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--text); }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-copy {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.2em;
+  }
+
+  .footer-domains {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-domains a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-domains a:hover { color: var(--text); }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- STARS -->
+<div class="stars" id="stars"></div>
+
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    U∞
+  </a>
+  <div class="nav-right">
+    <a href="#student" class="nav-link">Scholar</a>
+    <a href="#educator" class="nav-link">Syndicate</a>
+    <a href="#institution" class="nav-link">Institution</a>
+    <a href="https://uinfinitum.tech" class="nav-link">Tech</a>
+    <a href="https://uinfinitum.app" class="nav-cta">Enter Portal →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">Industrial Simulation Infrastructure · Delhi, India · 2026</div>
+  <div class="hero-title">U∞</div>
+  <div class="hero-title-small">U-Infinitum</div>
+  <div class="hero-declaration">
+    We build what standard institutions cannot.<br/>
+    Simulation engines. Synthetic datasets. Industrial environments.<br/>
+    Built by researchers and developers. Used by educators and scholars.
+  </div>
+
+  <div class="path-selector">
+    <a href="#student" class="path-btn student">
+      <span class="path-icon">🎓</span>
+      <div class="path-role">Scholar</div>
+      <div class="path-label">I am a Student</div>
+      <div class="path-desc">3-week simulation sprints<br/>₹1,000 – ₹3,000</div>
+    </a>
+    <a href="#educator" class="path-btn educator">
+      <span class="path-icon">⚙️</span>
+      <div class="path-role">Syndicate</div>
+      <div class="path-label">I am an Educator</div>
+      <div class="path-desc">Platform + tools<br/>₹8,000 / month</div>
+    </a>
+    <a href="#institution" class="path-btn institution">
+      <span class="path-icon">🏛️</span>
+      <div class="path-role">Institution</div>
+      <div class="path-label">I represent a School</div>
+      <div class="path-desc">Bulk student contracts<br/>MoU-based</div>
+    </a>
+  </div>
+
+  <div class="scroll-ind">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- STUDENT SECTION -->
+<section class="content-section student-section" id="student">
+  <div class="section-eyebrow">U∞ Scholar · Student Wing</div>
+  <div class="reveal">
+    <div class="section-title-large">You don't watch.<br/>You work.</div>
+    <div class="section-desc">A 3-week simulation sprint puts you inside a live industrial dataset environment. No lectures. No textbooks. A problem, a dataset, and a working environment — graded on what you produce, not what you memorize.</div>
+  </div>
+
+  <div class="sprint-grid reveal">
+    <div class="sprint-card">
+      <div class="sprint-week">Week 01 — Immersion</div>
+      <div class="sprint-title">Environment Access + Dataset Orientation</div>
+      <div class="sprint-desc">You receive your simulation environment and dataset. The first week is pure exploration. Understand the structure, identify the problems, document your initial observations in the built-in research log.</div>
+    </div>
+    <div class="sprint-card">
+      <div class="sprint-week">Week 02 — Analysis</div>
+      <div class="sprint-title">Deep Work + Structured Problem Solving</div>
+      <div class="sprint-desc">Core work phase. You apply your domain knowledge to the dataset. The environment tracks every meaningful action. Your educator monitors progress through the Syndicate dashboard in real time.</div>
+    </div>
+    <div class="sprint-card">
+      <div class="sprint-week">Week 03 — Output</div>
+      <div class="sprint-title">Synthesis + Graded Submission</div>
+      <div class="sprint-desc">Final week. You produce a structured output — an analysis, a solution, a model. The system auto-generates a performance report for your institution. You keep a copy permanently.</div>
+    </div>
+    <div class="sprint-card" style="border-color: var(--scholar); background: rgba(0,200,240,0.04);">
+      <div class="sprint-week" style="color: var(--text-mid);">Why This Works</div>
+      <div class="sprint-title">Industry-Grade Environments</div>
+      <div class="sprint-desc">The datasets are synthetic but architecturally identical to real industrial data. This is the environment your future employer expects you to navigate on day one. No other platform provides this.</div>
+    </div>
+  </div>
+
+  <div class="price-row reveal">
+    <div>
+      <div class="price-label">School Students</div>
+      <div class="price-value">₹1,000</div>
+    </div>
+    <div>
+      <div class="price-label">University Scholars</div>
+      <div class="price-value">₹3,000</div>
+    </div>
+    <div>
+      <div class="price-label">Duration</div>
+      <div class="price-value" style="font-size:28px; color: var(--text-mid);">3 Weeks</div>
+    </div>
+    <a href="https://cosmofeed.com" class="price-cta">Apply for Next Sprint →</a>
+  </div>
+</section>
+
+<!-- EDUCATOR SECTION -->
+<section class="content-section educator-section" id="educator">
+  <div class="section-eyebrow">U∞ Syndicate · Educator Wing</div>
+  <div class="reveal">
+    <div class="section-title-large">Your portal.<br/>Our infrastructure.</div>
+    <div class="section-desc">You bring the students and the expertise. U∞ provides the industrial simulation environment, the branded subdomain, and the tools that no individual educator can build alone.</div>
+  </div>
+
+  <div class="feature-grid reveal">
+    <div class="feature-card">
+      <span class="feature-icon">🌐</span>
+      <div class="feature-title">Branded Subdomain Portal</div>
+      <div class="feature-desc">Your own name.e.uinfinitum.app portal. Branded with your colors. Looks like your platform — runs on ours. Live within 24 hours of verification.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">⚙️</span>
+      <div class="feature-title">Forge Tool Access</div>
+      <div class="feature-desc">Full access to the U∞ Forge simulation library. Interactive datasets, 3D environment builders, automated grading systems. Tools that would take a team months to build.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📊</span>
+      <div class="feature-title">Student Dashboard</div>
+      <div class="feature-desc">Real-time cohort monitoring. See exactly where each student is in their sprint, what they have produced, and what your automated performance report will show the institution.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">✅</span>
+      <div class="feature-title">Registry Verification</div>
+      <div class="feature-desc">A U∞ Verified badge on your public profile. When institutions evaluate educators, verification is the filter. This badge means your platform meets industrial standards.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔄</span>
+      <div class="feature-title">Auto Cohort Management</div>
+      <div class="feature-desc">Students enroll, pay, and receive access automatically. When their 3 weeks expire, access closes automatically. Zero manual administration on your side.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📡</span>
+      <div class="feature-title">Signal Publications</div>
+      <div class="feature-desc">Your research and case studies can be published under U∞ Signal — gaining academic visibility through our research output channel and ResearchGate indexing.</div>
+    </div>
+  </div>
+
+  <div class="educator-price-block reveal">
+    <div class="edu-price-card">
+      <div class="edu-price-num">₹8,000</div>
+      <div class="edu-price-period">PER MONTH · SUBSCRIPTION</div>
+      <ul class="edu-includes">
+        <li>Branded subdomain portal (name.e.uinfinitum.app)</li>
+        <li>Full Forge simulation library access</li>
+        <li>Unlimited student cohorts</li>
+        <li>Real-time student performance dashboard</li>
+        <li>Registry Verified badge</li>
+        <li>Automated cohort management</li>
+        <li>Signal publication eligibility</li>
+        <li>Direct Razorpay/UPI revenue integration</li>
+      </ul>
+    </div>
+    <div class="apply-block">
+      <div>
+        <div class="mou-title">This is an application.</div>
+        <div class="apply-note">U∞ Syndicate is not open to all educators. We review your background, domain of expertise, and the institutional context you operate in before granting access.<br/><br/>Not because we want to be difficult. Because your students deserve a verified environment.</div>
+      </div>
+      <a href="mailto:syndicate@uinfinitum.com" class="apply-btn">Apply to Syndicate →</a>
+    </div>
+  </div>
+</section>
+
+<!-- INSTITUTION SECTION -->
+<section class="content-section institution-section" id="institution">
+  <div class="section-eyebrow">U∞ Scholar · Institutional Contracts</div>
+  <div class="reveal">
+    <div class="section-title-large">One contract.<br/>Hundreds of<br/>active labs.</div>
+    <div class="section-desc">Sign one MoU. Commit a student count. U∞ handles access provisioning, sprint management, and performance reporting automatically. No IT infrastructure required on your side.</div>
+  </div>
+
+  <div class="inst-grid reveal">
+    <div>
+      <div class="inst-stats">
+        <div class="stat-block">
+          <div class="stat-num">₹1k</div>
+          <div class="stat-label">Per school student · 3-week sprint</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-num">₹3k</div>
+          <div class="stat-label">Per university scholar · 3-week sprint</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-num">3W</div>
+          <div class="stat-label">Sprint duration · Auto-managed</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-num">0</div>
+          <div class="stat-label">Server infrastructure required from you</div>
+        </div>
+      </div>
+
+      <div style="background: var(--panel); border: 1px solid var(--border); padding: 32px;">
+        <div class="edu-price-period" style="margin-bottom: 16px;">WHAT YOUR INSTITUTION RECEIVES</div>
+        <ul class="edu-includes">
+          <li>Bulk student access keys via CSV import</li>
+          <li>Institutional admin dashboard for monitoring all cohorts</li>
+          <li>Automated 3-week access windows — no manual management</li>
+          <li>Individual student performance reports for grading</li>
+          <li>Cohort-level analytics for curriculum planning</li>
+          <li>U∞ Verified institution badge for accreditation documentation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mou-form">
+      <div class="mou-title">Start the MoU Process</div>
+      <div class="mou-desc">Three fields. We will respond within 48 hours with a tailored proposal for your institution's scale and subject domain.</div>
+      <div class="form-field">
+        <label class="form-label">Institution Name</label>
+        <input type="text" class="form-input" placeholder="e.g. Delhi Technological University">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Estimated Student Count</label>
+        <input type="text" class="form-input" placeholder="e.g. 200 students per semester">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Primary Subject Domain</label>
+        <input type="text" class="form-input" placeholder="e.g. Data Science, Computer Engineering">
+      </div>
+      <button class="form-submit">Submit MoU Inquiry →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ECOSYSTEM MAP -->
+<section class="ecosystem-map">
+  <div class="section-eyebrow">The Full Ecosystem</div>
+  <div class="section-title-large reveal">Eight branches.<br/>One architecture.</div>
+
+  <div class="eco-nodes reveal">
+    <a href="#" class="eco-node">
+      <div class="eco-node-dot" style="background: var(--forge); box-shadow: 0 0 8px var(--forge);"></div>
+      <div class="eco-node-name">Forge</div>
+      <div class="eco-node-id">forge.uinfinitum.com</div>
+      <div class="eco-node-desc">Simulation engines and synthetic datasets. The technical moat. Everything runs on what Forge builds.</div>
+    </a>
+    <a href="#student" class="eco-node">
+      <div class="eco-node-dot" style="background: var(--scholar); box-shadow: 0 0 8px var(--scholar);"></div>
+      <div class="eco-node-name">Scholar</div>
+      <div class="eco-node-id">name.s.uinfinitum.app</div>
+      <div class="eco-node-desc">Student simulation sprint environments. 3-week active working sessions.</div>
+    </a>
+    <a href="#educator" class="eco-node">
+      <div class="eco-node-dot" style="background: var(--syndicate); box-shadow: 0 0 8px var(--syndicate);"></div>
+      <div class="eco-node-name">Syndicate</div>
+      <div class="eco-node-id">name.e.uinfinitum.app</div>
+      <div class="eco-node-desc">Educator platform portals. Subscription-based. Powered by Forge tools.</div>
+    </a>
+    <a href="#" class="eco-node" style="opacity: 0.5;">
+      <div class="eco-node-dot" style="background: var(--nexus); box-shadow: 0 0 8px var(--nexus);"></div>
+      <div class="eco-node-name">Nexus</div>
+      <div class="eco-node-id">Year 2</div>
+      <div class="eco-node-desc">Global ambassador network. Techno-diplomats validating industrial standards.</div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">U∞</div>
+      <div class="footer-tagline">Industrial simulation infrastructure for educators<br/>and institutions that demand more than a video course.<br/>Built by researchers and developers. Delhi, India.</div>
+    </div>
+    <div>
+      <div class="footer-col-title">Platform</div>
+      <ul class="footer-links">
+        <li><a href="#student">Scholar Sprints</a></li>
+        <li><a href="#educator">Syndicate</a></li>
+        <li><a href="#institution">Institutions</a></li>
+        <li><a href="https://uinfinitum.app">Enter Portal</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Technical</div>
+      <ul class="footer-links">
+        <li><a href="https://uinfinitum.tech">Documentation</a></li>
+        <li><a href="https://uinfinitum.tech/signal">Signal Archive</a></li>
+        <li><a href="https://uinfinitum.tech/stack">Stack</a></li>
+        <li><a href="https://uinfinitum.tech/spec">U-Spec</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="https://sa.com">Founder — SA</a></li>
+        <li><a href="https://registry.uinfinitum.com">Registry</a></li>
+        <li><a href="mailto:hello@uinfinitum.com">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 U∞ · Delhi, India · Mastery over Noise</div>
+    <div class="footer-domains">
+      <a href="https://uinfinitum.com">uinfinitum.com</a>
+      <a href="https://uinfinitum.tech">uinfinitum.tech</a>
+      <a href="https://uinfinitum.app">uinfinitum.app</a>
+      <a href="https://sa.com">sa.com</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Stars
+  const starsEl = document.getElementById('stars');
+  for(let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--o:${0.1+Math.random()*0.4};animation-delay:${Math.random()*4}s`;
+    starsEl.appendChild(s);
+  }
+
+  // Reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
+</script>
+</body>
+</html>
