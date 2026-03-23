@@ -53,7 +53,7 @@ export default function Hero() {
         this.angle = Math.random() * Math.PI * 2;
         this.color = Math.random() > 0.8 
           ? `hsla(40, 60%, 65%, ${Math.random() * 0.45 + 0.1})` // Gold
-          : `hsla(215, 60%, 55%, ${Math.random() * 0.45 + 0.1})`; // Blue
+          : `hsla(35, 60%, 55%, ${Math.random() * 0.45 + 0.1})`; // Amber
       }
 
       update() {
@@ -125,17 +125,17 @@ export default function Hero() {
       <div className="absolute inset-0 pointer-events-none z-[5]">
         {/* Perimeter Vignette */}
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 50%, rgba(3,8,16,0.08) 70%, rgba(3,8,16,0.45) 100%)'
+          background: 'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 50%, rgba(0,0,15,0.08) 70%, rgba(0,0,15,0.45) 100%)'
         }} />
         
         {/* Bottom Fade */}
         <div className="absolute bottom-0 left-0 right-0 h-[32vh]" style={{
-          background: 'linear-gradient(to top, rgba(3,8,16,0.65) 0%, transparent 100%)'
+          background: 'linear-gradient(to top, rgba(0,0,15,0.65) 0%, transparent 100%)'
         }} />
         
         {/* Top Fade */}
         <div className="absolute top-0 left-0 right-0 h-[18vh]" style={{
-          background: 'linear-gradient(to bottom, rgba(3,8,16,0.35) 0%, transparent 100%)'
+          background: 'linear-gradient(to bottom, rgba(0,0,15,0.35) 0%, transparent 100%)'
         }} />
       </div>
 

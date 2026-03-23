@@ -21,22 +21,22 @@ export default function PricingBento() {
       <div className="absolute inset-0 pointer-events-none z-[1]">
         {/* Perimeter Vignette */}
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 30%, rgba(3,8,16,0.3) 60%, rgba(3,8,16,0.7) 100%)'
+          background: 'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 30%, rgba(0,0,15,0.3) 60%, rgba(0,0,15,0.7) 100%)'
         }} />
         
         {/* Center Glow */}
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(circle at 50% 50%, rgba(60,130,246,0.06) 0%, transparent 70%)'
+          background: 'radial-gradient(circle at 50% 50%, rgba(201,130,20,0.06) 0%, transparent 70%)'
         }} />
 
         {/* Bottom Fade */}
         <div className="absolute bottom-0 left-0 right-0 h-[28vh]" style={{
-          background: 'linear-gradient(to top, rgba(3,8,16,0.8) 0%, transparent 100%)'
+          background: 'linear-gradient(to top, rgba(0,0,15,0.8) 0%, transparent 100%)'
         }} />
         
         {/* Top Fade */}
         <div className="absolute top-0 left-0 right-0 h-[20vh]" style={{
-          background: 'linear-gradient(to bottom, rgba(3,8,16,0.5) 0%, transparent 100%)'
+          background: 'linear-gradient(to bottom, rgba(0,0,15,0.5) 0%, transparent 100%)'
         }} />
       </div>
 

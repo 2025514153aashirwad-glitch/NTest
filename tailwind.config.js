@@ -7,8 +7,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        void: "#030810",
-        deep: "#050d1e",
+        void: "#00000f",
+        deep: "#00000f",
         surface: "rgba(7,16,45,0.52)",
         "surface-hi": "rgba(10,22,62,0.68)",
         glass: "rgba(8,18,52,0.42)",

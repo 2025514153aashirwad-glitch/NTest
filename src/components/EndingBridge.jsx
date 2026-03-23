@@ -21,7 +21,7 @@ export default function EndingBridge() {
       <div className="absolute inset-0 pointer-events-none z-[1]">
         {/* Perimeter Vignette */}
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 20%, rgba(3,8,16,0.3) 60%, rgba(3,8,16,0.85) 100%)'
+          background: 'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 20%, rgba(0,0,15,0.3) 60%, rgba(0,0,15,0.85) 100%)'
         }} />
         
         {/* Center Glow */}
@@ -31,12 +31,12 @@ export default function EndingBridge() {
 
         {/* Bottom Fade - Merging into black Footer text section */}
         <div className="absolute bottom-0 left-0 right-0 h-[35vh]" style={{
-          background: 'linear-gradient(to top, rgba(3,8,16,1) 0%, transparent 100%)'
+          background: 'linear-gradient(to top, rgba(0,0,15,1) 0%, transparent 100%)'
         }} />
         
         {/* Top Fade - Merging from previous content */}
         <div className="absolute top-0 left-0 right-0 h-[35vh]" style={{
-          background: 'linear-gradient(to bottom, rgba(3,8,16,1) 0%, transparent 100%)'
+          background: 'linear-gradient(to bottom, rgba(0,0,15,1) 0%, transparent 100%)'
         }} />
       </div>
 
